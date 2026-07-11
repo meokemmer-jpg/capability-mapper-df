@@ -1,0 +1,9 @@
+[project]
+name = "capability-mapper-df"
+version = "0.1.0"
+description = "Spawned Dark Factory for capability-mapper"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

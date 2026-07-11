@@ -1,0 +1,17 @@
+name: capability-mapper-df
+type: dark-factory
+version: 0.1.0
+spawned_from: .pytest_cache
+purpose: capability-mapper
+trigger_gap:
+  type: missing-capabilities-config
+  reason: "config.yaml has no usable capabilities declaration."
+  evidence_path: null
+capabilities:
+  - capability-mapper
+inputs:
+  - existing_df_path
+  - capability_gap
+outputs:
+  - generated_artifacts
+  - discovery_report
