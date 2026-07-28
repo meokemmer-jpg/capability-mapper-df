@@ -1,18 +1,15 @@
 from pathlib import Path
 
-from src.engine import Engine
+from src.engine import run
 
 
-def test_engine_generates_discovery_report(tmp_path: Path) -> None:
-    source_df = tmp_path / "source-df"
-    source_df.mkdir()
+def test_engine_writes_report(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    source = tmp_path / "dfs"
+    source.mkdir()
+    log = tmp_path / "spawned-dfs-log.jsonl"
 
-    result = Engine(tmp_path / "artifacts").run(
-        source_df,
-        {"gap_type": "missing-capabilities-config", "missing_capability": "capability-mapper"},
-    )
-
-    assert result.status == "completed"
-    assert result.capability == "capability-mapper"
-    assert len(result.artifacts) == 1
-    assert Path(result.artifacts[0]).exists()
+    assert run(source, log) == 0
+    assert (tmp_path / "artifacts" / "report.json").exists()
+    assert log.exists()
+    assert 'capability-mapper-df' in log.read_text(encoding="utf-8")

@@ -1,17 +1,16 @@
 name: capability-mapper-df
-type: dark-factory
+capability: capability-mapper
 version: 0.1.0
-spawned_from: .pytest_cache
-purpose: capability-mapper
-trigger_gap:
-  type: missing-capabilities-config
-  reason: "config.yaml has no usable capabilities declaration."
-  evidence_path: null
-capabilities:
-  - capability-mapper
+description: "Auto-spawned DF for capability gap: __pycache__ lacks discoverable capability metadata"
 inputs:
-  - existing_df_path
-  - capability_gap
+  source_dir: "~/Projects/dark-factories"
+  log_path: "./spawned-dfs-log.jsonl"
 outputs:
-  - generated_artifacts
-  - discovery_report
+  - "./artifacts"
+policy:
+  mode: assistive
+  github_repo_creation: true
+  requires_gh_auth: true
+gap:
+  reason: "__pycache__ lacks discoverable capability metadata"
+  evidence: "missing: /Users/make/Projects/dark-factories/__pycache__/capabilities.yaml, /Users/make/Projects/dark-factories/__pycache__/capabilities.yml, /Users/make/Projects/dark-factories/__pycache__/capabilities.json, /Users/make/Projects/dark-factories/__pycache__/README.md"

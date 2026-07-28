@@ -1,0 +1,28 @@
+name: capability-mapper-df
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  run-df:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install pytest
+      - name: Test
+        run: python -m pytest
+      - name: Run DF engine
+        run: python src/engine.py --source-dir . --log-path ./spawned-dfs-log.jsonl
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: capability-mapper-df-artifacts
+          path: |
+            artifacts
+            spawned-dfs-log.jsonl
