@@ -1,15 +1,28 @@
-from pathlib import Path
+import importlib.util
+import pathlib
 
-from src.engine import run
+
+def load_engine_module():
+    root = pathlib.Path(__file__).resolve().parents[1]
+    engine_path = root / "src" / "engine.py"
+    spec = importlib.util.spec_from_file_location("engine", engine_path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 
-def test_engine_writes_report(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    source = tmp_path / "dfs"
-    source.mkdir()
-    log = tmp_path / "spawned-dfs-log.jsonl"
+def test_engine_discovers_at_least_one_gap():
+    module = load_engine_module()
+    engine = module.DarkFactoryEngine()
+    findings = engine.discover()
 
-    assert run(source, log) == 0
-    assert (tmp_path / "artifacts" / "report.json").exists()
-    assert log.exists()
-    assert 'capability-mapper-df' in log.read_text(encoding="utf-8")
+    assert isinstance(findings, list)
+    assert findings
+    assert "gap_id" in findings[0]
+
+
+def test_main_returns_success():
+    module = load_engine_module()
+
+    assert module.main() == 0

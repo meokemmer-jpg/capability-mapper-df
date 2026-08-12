@@ -1,16 +1,15 @@
 name: capability-mapper-df
-capability: capability-mapper
 version: 0.1.0
-description: "Auto-spawned DF for capability gap: __pycache__ lacks discoverable capability metadata"
-inputs:
-  source_dir: "~/Projects/dark-factories"
-  log_path: "./spawned-dfs-log.jsonl"
-outputs:
-  - "./artifacts"
-policy:
-  mode: assistive
-  github_repo_creation: true
-  requires_gh_auth: true
-gap:
-  reason: "__pycache__ lacks discoverable capability metadata"
-  evidence: "missing: /Users/make/Projects/dark-factories/__pycache__/capabilities.yaml, /Users/make/Projects/dark-factories/__pycache__/capabilities.yml, /Users/make/Projects/dark-factories/__pycache__/capabilities.json, /Users/make/Projects/dark-factories/__pycache__/README.md"
+description: Generated Dark Factory for capability gap: DF config does not declare capabilities; need capability mapping support.
+capabilities:
+  - gap_discovery
+  - template_generation
+  - self_expansion
+spawn:
+  source_gap_id: tmp-heylou-contrarian-missing-capability-map
+  source_df: .tmp_heylou_contrarian
+  evidence_path: "/Users/make/Projects/dark-factories/.tmp_heylou_contrarian/config.yaml"
+  priority: medium
+runtime:
+  python: ">=3.11"
+  entrypoint: "src.engine:main"

@@ -1,66 +1,74 @@
-#!/usr/bin/env python3
 """
-Engine for capability-mapper-df.
+Engine skeleton for capability-mapper-df.
 
-Capability: capability-mapper
-Spawn reason: __pycache__ lacks discoverable capability metadata
+Generated from capability gap:
+  DF config does not declare capabilities; need capability mapping support.
 """
 
 from __future__ import annotations
 
-import argparse
-import datetime as dt
 import json
-from pathlib import Path
+import pathlib
+import datetime as dt
+from dataclasses import dataclass, asdict
+from typing import Any
 
 
-def now_iso() -> str:
-    return dt.datetime.now(dt.timezone.utc).isoformat()
+@dataclass
+class DFEvent:
+    timestamp: str
+    df_name: str
+    event: str
+    payload: dict[str, Any]
 
 
-def append_jsonl(path: Path, event: str, **fields: object) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as f:
-        f.write(json.dumps({"ts": now_iso(), "event": event, **fields}, sort_keys=True) + "\n")
+class DarkFactoryEngine:
+    def __init__(self, root: pathlib.Path | None = None) -> None:
+        self.root = root or pathlib.Path.cwd()
+        self.name = "capability-mapper-df"
 
+    def emit(self, event: str, payload: dict[str, Any]) -> DFEvent:
+        return DFEvent(
+            timestamp=dt.datetime.now(dt.timezone.utc).isoformat(),
+            df_name=self.name,
+            event=event,
+            payload=payload,
+        )
 
-def run(source_dir: Path, log_path: Path) -> int:
-    source_dir = source_dir.expanduser()
-    append_jsonl(
-        log_path,
-        "df_engine_started",
-        df_name='capability-mapper-df',
-        capability='capability-mapper',
-        source_dir=str(source_dir),
-    )
+    def discover(self) -> list[dict[str, Any]]:
+        """
+        Discover local work items this DF can handle.
 
-    artifacts = Path("./artifacts")
-    artifacts.mkdir(exist_ok=True)
-    report = artifacts / "report.json"
-    report.write_text(
-        json.dumps(
+        Replace this method with domain-specific capability discovery.
+        """
+        return [
             {
-                "df_name": 'capability-mapper-df',
-                "capability": 'capability-mapper',
-                "source_dir": str(source_dir),
-                "status": "skeleton-ready",
-            },
-            indent=2,
-            sort_keys=True,
-        ),
-        encoding="utf-8",
-    )
+                "gap_id": "tmp-heylou-contrarian-missing-capability-map",
+                "reason": "DF config does not declare capabilities; need capability mapping support.",
+                "source_df": ".tmp_heylou_contrarian",
+                "evidence_path": "/Users/make/Projects/dark-factories/.tmp_heylou_contrarian/config.yaml",
+                "priority": "medium",
+            }
+        ]
 
-    append_jsonl(log_path, "df_engine_completed", df_name='capability-mapper-df', report=str(report))
-    return 0
+    def run(self) -> list[DFEvent]:
+        findings = self.discover()
+        return [
+            self.emit(
+                "discovery.completed",
+                {
+                    "findings": findings,
+                    "count": len(findings),
+                },
+            )
+        ]
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--source-dir", default="~/Projects/dark-factories")
-    parser.add_argument("--log-path", default="./spawned-dfs-log.jsonl")
-    args = parser.parse_args()
-    return run(Path(args.source_dir), Path(args.log_path))
+    engine = DarkFactoryEngine()
+    for event in engine.run():
+        print(json.dumps(asdict(event), ensure_ascii=False, sort_keys=True))
+    return 0
 
 
 if __name__ == "__main__":

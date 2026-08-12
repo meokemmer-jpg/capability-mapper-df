@@ -1,25 +1,19 @@
 # capability-mapper-df
 
-Auto-spawned Dark Factory template.
+Generated Dark Factory template.
 
-## Capability
+## Source Gap
 
-`capability-mapper`
-
-## Gap
-
-__pycache__ lacks discoverable capability metadata
-
-Evidence:
-
-```text
-missing: /Users/make/Projects/dark-factories/__pycache__/capabilities.yaml, /Users/make/Projects/dark-factories/__pycache__/capabilities.yml, /Users/make/Projects/dark-factories/__pycache__/capabilities.json, /Users/make/Projects/dark-factories/__pycache__/README.md
-```
+- Gap ID: `tmp-heylou-contrarian-missing-capability-map`
+- Priority: `medium`
+- Source DF: `.tmp_heylou_contrarian`
+- Evidence: `/Users/make/Projects/dark-factories/.tmp_heylou_contrarian/config.yaml`
+- Reason: DF config does not declare capabilities; need capability mapping support.
 
 ## Run
 
 ```bash
-python src/engine.py --source-dir ~/Projects/dark-factories --log-path ./spawned-dfs-log.jsonl
+python src/engine.py
 ```
 
 ## Test
@@ -27,3 +21,7 @@ python src/engine.py --source-dir ~/Projects/dark-factories --log-path ./spawned
 ```bash
 python -m pytest
 ```
+
+## GitHub Workflow
+
+The included workflow runs tests on pushes and pull requests.
